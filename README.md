@@ -93,4 +93,3 @@ The installer checks for these and warns if they're missing.
 ## License
 
 MIT
-# react-tanstack-start

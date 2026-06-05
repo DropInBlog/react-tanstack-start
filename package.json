@@ -43,7 +43,7 @@
   "author": "",
   "license": "MIT",
   "peerDependencies": {
-    "@dropinblog/react-core": "^1.0.11",
+    "@dropinblog/react-core": "^1.0.12",
     "@tanstack/react-router": ">=1.170.0",
     "@tanstack/react-start": ">=1.168.0",
     "react": ">=18.0.0",
@@ -55,9 +55,8 @@
     "fs-extra": "^11.2.0"
   },
   "devDependencies": {
-    "@dropinblog/react-core": "file:../dropinblog-react-core",
+    "@dropinblog/react-core": "^1.0.12",
     "@tanstack/react-router": "^1.170.0",
-    "@tanstack/react-start": "^1.168.0",
     "@types/fs-extra": "^11.0.0",
     "@types/node": "^20.0.0",
     "@types/react": "^18.0.0",
