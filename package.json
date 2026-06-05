@@ -1,0 +1,70 @@
+{
+  "name": "@dropinblog/react-tanstack-start",
+  "version": "1.0.0",
+  "description": "TanStack Start adapter for @dropinblog/react-core with server-side rendering support",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "https://github.com/DropInBlog/react-tanstack-start",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist/**",
+    "templates/**",
+    "README.md",
+    "LICENSE"
+  ],
+  "bin": {
+    "dropinblog-tanstack": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsup && node scripts/copy-templates.cjs",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "dropinblog",
+    "tanstack",
+    "tanstack-start",
+    "blog",
+    "react",
+    "ssr"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "@dropinblog/react-core": "^1.0.11",
+    "@tanstack/react-router": ">=1.170.0",
+    "@tanstack/react-start": ">=1.168.0",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^12.0.0",
+    "fs-extra": "^11.2.0"
+  },
+  "devDependencies": {
+    "@dropinblog/react-core": "file:../dropinblog-react-core",
+    "@tanstack/react-router": "^1.170.0",
+    "@tanstack/react-start": "^1.168.0",
+    "@types/fs-extra": "^11.0.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^2.0.0"
+  }
+}
