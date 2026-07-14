@@ -1,4 +1,5 @@
 import { defineConfig } from 'tsup';
+import pkg from './package.json';
 
 export default defineConfig([
   {
@@ -14,6 +15,7 @@ export default defineConfig([
       '@tanstack/react-start',
       '@dropinblog/react-core',
     ],
+    define: { __DIB_PACKAGE_VERSION__: JSON.stringify(pkg.version) },
   },
   {
     entry: ['cli/cli.ts'],
@@ -23,5 +25,6 @@ export default defineConfig([
     outDir: 'dist',
     bundle: true,
     platform: 'node',
+    define: { __DIB_PACKAGE_VERSION__: JSON.stringify(pkg.version) },
   },
 ]);

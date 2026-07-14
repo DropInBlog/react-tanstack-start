@@ -6,6 +6,10 @@ const DEFAULT_BASE_PATH = 'blog';
 const DEFAULT_API_BASE_URL = 'https://api.dropinblog.com/v2';
 const DEFAULT_FIELDS = ['head_data', 'body_html', 'head_items', 'head_html'];
 const DEFAULT_CACHE_TTL = 1000 * 60 * 5; // 5 minutes
+const DEFAULT_PACKAGE_SOURCE =
+  typeof __DIB_PACKAGE_VERSION__ !== 'undefined'
+    ? `tanstack-start@${__DIB_PACKAGE_VERSION__}`
+    : 'tanstack-start';
 
 /**
  * Reads credentials from server-only environment variables. Unlike the Next.js
@@ -92,6 +96,7 @@ function resolveServerConfig(config: StartDropInBlogConfig = {}): ResolvedDropIn
     fetchImpl: withBlogUrl(ensureFetch(config.fetchImpl), blogUrl),
     cacheTtlMs: config.cacheTtlMs ?? DEFAULT_CACHE_TTL,
     defaultFields: config.defaultFields ?? DEFAULT_FIELDS,
+    packageSource: config.packageSource ?? DEFAULT_PACKAGE_SOURCE,
   };
 }
 
