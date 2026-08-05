@@ -22,11 +22,11 @@ npm install @dropinblog/react-tanstack-start @dropinblog/react-core
 ### 1. Configure Environment Variables
 
 Create a `.env` file in your TanStack Start project. These are server-only, so do
-not prefix them with `VITE_` (that would expose the API token to the browser):
+not prefix them with `VITE_` (that would expose the API key to the browser):
 
 ```env
 DROPINBLOG_BLOG_ID=your_dropinblog_blog_id
-DROPINBLOG_API_TOKEN=your_dropinblog_api_token
+DROPINBLOG_API_KEY=your_dropinblog_api_key
 ```
 
 ### 2. Install Templates

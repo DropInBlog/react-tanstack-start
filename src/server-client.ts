@@ -14,7 +14,7 @@ const DEFAULT_PACKAGE_SOURCE =
 /**
  * Reads credentials from server-only environment variables. Unlike the Next.js
  * adapter, there is intentionally no public-prefix fallback: these values must
- * never be exposed to the browser bundle. The API token is only ever read on
+ * never be exposed to the browser bundle. The API key is only ever read on
  * the server (inside a server function or a server route handler).
  */
 function readServerEnv(key: string): string | undefined {
@@ -32,6 +32,16 @@ function normalizeBasePath(input?: string) {
   const baseSegment = baseParts.join('/');
   const basePath = `/${baseSegment}`;
   return { baseSegment, basePath, baseParts };
+}
+
+// resolveServerConfig runs per request, so each deprecation is reported
+// once per process rather than once per call.
+const warned = new Set<string>();
+
+function warnOnce(message: string): void {
+  if (warned.has(message)) return;
+  warned.add(message);
+  console.warn(`[@dropinblog/react-tanstack-start] ${message}`);
 }
 
 function ensureFetch(fetchImpl?: typeof fetch): typeof fetch {
@@ -74,13 +84,28 @@ function withBlogUrl(fetchImpl: typeof fetch, blogUrl?: string): typeof fetch {
 
 function resolveServerConfig(config: StartDropInBlogConfig = {}): ResolvedDropInBlogConfig {
   const blogId = config.blogId ?? readServerEnv('DROPINBLOG_BLOG_ID');
-  const apiToken = config.apiToken ?? readServerEnv('DROPINBLOG_API_TOKEN');
+  // Options beat env vars; the current names beat the legacy ones they
+  // replaced. Blank values fall through so a half-finished rename still
+  // authenticates.
+  const apiKey =
+    config.apiKey ||
+    config.apiToken ||
+    readServerEnv('DROPINBLOG_API_KEY') ||
+    readServerEnv('DROPINBLOG_API_TOKEN');
 
   if (!blogId) {
     throw new Error('DROPINBLOG_BLOG_ID environment variable is required');
   }
-  if (!apiToken) {
-    throw new Error('DROPINBLOG_API_TOKEN environment variable is required');
+  if (!apiKey) {
+    throw new Error('DROPINBLOG_API_KEY environment variable is required');
+  }
+
+  if (!config.apiKey) {
+    if (config.apiToken) {
+      warnOnce('The "apiToken" option is deprecated — rename it to "apiKey".');
+    } else if (!readServerEnv('DROPINBLOG_API_KEY')) {
+      warnOnce('DROPINBLOG_API_TOKEN is deprecated — rename it to DROPINBLOG_API_KEY.');
+    }
   }
 
   const { basePath, baseSegment, baseParts } = normalizeBasePath(config.basePath);
@@ -88,7 +113,7 @@ function resolveServerConfig(config: StartDropInBlogConfig = {}): ResolvedDropIn
 
   return {
     blogId,
-    apiToken,
+    apiKey,
     basePath,
     baseSegment,
     baseParts,

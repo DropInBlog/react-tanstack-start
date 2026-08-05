@@ -8,7 +8,7 @@ import { resolveBlogData } from '@dropinblog/react-tanstack-start';
  * It is defined here in your app's source (not inside the package) on purpose:
  * TanStack Start's Vite plugin only scans your project source for
  * `createServerFn` calls, and keeping it here guarantees the secret
- * DROPINBLOG_API_TOKEN never ships to the browser bundle. On the client, calling
+ * DROPINBLOG_API_KEY never ships to the browser bundle. On the client, calling
  * `fetchBlogData(...)` becomes a fetch to your own server.
  *
  * We derive `blogUrl` from the incoming request and pass it through so the

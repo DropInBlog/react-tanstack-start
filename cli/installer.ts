@@ -124,6 +124,6 @@ export async function installTemplates(targetDir: string, routePathInput = 'blog
   console.log('   npm install @dropinblog/react-tanstack-start @dropinblog/react-core');
   console.log('2. Add your DropInBlog credentials to .env (server-only — do NOT prefix with VITE_):');
   console.log('   DROPINBLOG_BLOG_ID=your-blog-id');
-  console.log('   DROPINBLOG_API_TOKEN=your-api-token');
+  console.log('   DROPINBLOG_API_KEY=your-api-key');
   console.log(`3. Start your dev server, then visit http://localhost:3000/${routePath}`);
 }

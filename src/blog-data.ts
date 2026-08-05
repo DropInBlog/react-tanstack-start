@@ -89,7 +89,7 @@ function executeBlogRequest(
 
 /**
  * Resolves a splat path to its rendered blog payload. Intended to be called from
- * a server function (see the installed `-data.ts` template) so the API token
+ * a server function (see the installed `-data.ts` template) so the API key
  * stays server-only. Throws TanStack `notFound()` for unrecognized paths.
  */
 export async function resolveBlogData(
