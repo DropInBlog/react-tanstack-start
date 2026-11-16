@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Prepares a fresh Amp orb: installs this package's npm dependencies and builds
+# dist/ so the CLI (dist/cli.js) and scripts/smoke-fixture.sh work right away.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+step() {
+  local name="$1"; shift
+  local start=$SECONDS
+  echo "==> $name"
+  "$@"
+  echo "    $name took $((SECONDS - start))s"
+}
+
+echo "node $(node -v), npm $(npm -v)"
+
+# Same install as CI. A stale snapshot keeps the npm cache, so this stays offline-fast.
+step "npm ci" npm ci --legacy-peer-deps --prefer-offline --no-audit --no-fund --loglevel=error
+step "build" bash -c "npm run build --silent >/dev/null"
