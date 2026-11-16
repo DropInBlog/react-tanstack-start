@@ -88,6 +88,60 @@ async function rewriteRoutePath(dir: string, routePath: string): Promise<void> {
   }
 }
 
+/**
+ * Finds the installed @tanstack/react-start version by walking up from the
+ * project directory, so hoisted installs in monorepos are found too.
+ */
+async function findReactStartVersion(targetDir: string): Promise<string | null> {
+  let dir = path.resolve(targetDir);
+  for (;;) {
+    const pkgPath = path.join(dir, 'node_modules', '@tanstack', 'react-start', 'package.json');
+    if (await fs.pathExists(pkgPath)) {
+      const pkg = await fs.readJson(pkgPath);
+      return typeof pkg.version === 'string' ? pkg.version : null;
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) {
+      return null;
+    }
+    dir = parent;
+  }
+}
+
+/** True when `version` is below 1.169.0, where `.validator` replaced `.inputValidator`. */
+function usesInputValidator(version: string): boolean {
+  const [major, minor] = version.split('.').map((part) => parseInt(part, 10));
+  return major < 1 || (major === 1 && minor < 169);
+}
+
+/**
+ * The template calls `.validator(...)` (@tanstack/react-start 1.169+). For 1.168.x,
+ * rename the call to `.inputValidator(...)`. Only the chained call at the start of
+ * a line is rewritten, so the explanatory comment stays accurate.
+ */
+async function applyValidatorVariant(targetDir: string, blogDir: string): Promise<void> {
+  const version = await findReactStartVersion(targetDir);
+  if (!version) {
+    console.log(
+      chalk.yellow(
+        'Note: @tanstack/react-start not found in node_modules; using .validator() (1.169+). ' +
+          'On 1.168.x, rename it to .inputValidator() in -data.ts.'
+      )
+    );
+    return;
+  }
+
+  if (!usesInputValidator(version)) {
+    console.log(chalk.green(`✓ Using .validator() for @tanstack/react-start ${version}`));
+    return;
+  }
+
+  const dataFile = path.join(blogDir, '-data.ts');
+  const contents = await fs.readFile(dataFile, 'utf8');
+  await fs.writeFile(dataFile, contents.replace(/^(\s*)\.validator\(/m, '$1.inputValidator('));
+  console.log(chalk.green(`✓ Using .inputValidator() for @tanstack/react-start ${version}`));
+}
+
 export async function installTemplates(targetDir: string, routePathInput = 'blog'): Promise<void> {
   const routePath = normalizeRoutePath(routePathInput);
   console.log(chalk.blue(`Installing DropInBlog templates for TanStack Start at /${routePath}...`));
@@ -116,6 +170,8 @@ export async function installTemplates(targetDir: string, routePathInput = 'blog
   }
 
   console.log(chalk.green(`✓ Templates installed to ${path.relative(targetDir, targetBlogDir)}`));
+
+  await applyValidatorVariant(targetDir, targetBlogDir);
 
   await checkRootRoute(targetDir);
 

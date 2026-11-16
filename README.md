@@ -90,6 +90,22 @@ export const Route = createRootRoute({
 
 The installer checks for these and warns if they're missing.
 
+## Troubleshooting
+
+### `inputValidator is not a function` (or `validator is not a function`)
+
+`@tanstack/react-start` 1.169.0 renamed the server function input method from
+`.inputValidator(...)` to `.validator(...)`. The installer picks the right one
+for the version in your `node_modules`, but routes installed by 1.1.0 or
+earlier, or before an upgrade across 1.169.0, can have the wrong one.
+
+If you see `inputValidator is not a function`, change it to `.validator` in
+`src/routes/blog/-data.ts`, or re-run `npx dropinblog-tanstack install`. If you
+see `validator is not a function` (1.168.x), change it to `.inputValidator`.
+
+> Re-running the installer overwrites `src/routes/blog` (or your `--path`
+> directory), so it replaces any edits you made to those route files.
+
 ## License
 
 MIT

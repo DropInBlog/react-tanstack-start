@@ -17,11 +17,12 @@ import { resolveBlogData } from '@dropinblog/react-tanstack-start';
  * window.location, but during SSR there is no window. If your blog is mounted
  * somewhere other than /blog, change the path below to match.
  *
- * Note: very old versions of @tanstack/react-start named the input method
- * `.validator(...)` instead of `.inputValidator(...)`.
+ * Note: @tanstack/react-start 1.169+ names the input method `.validator(...)`;
+ * 1.168.x named it `.inputValidator(...)`. The installer picks the right one for
+ * your installed version. If you upgrade across 1.169.0, rename it here.
  */
 export const fetchBlogData = createServerFn({ method: 'GET' })
-  .inputValidator((splat: string) => splat)
+  .validator((splat: string) => splat)
   .handler(({ data }) => {
     const origin = new URL(getRequestUrl()).origin;
     return resolveBlogData(data, { blogUrl: `${origin}/blog` });

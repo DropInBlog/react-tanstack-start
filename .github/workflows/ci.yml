@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --legacy-peer-deps
+      - run: npm run typecheck
+      - run: npm test
+
+  # Installs the packed package into a fresh TanStack Start app per version,
+  # checks the server-function method the installer chose, and requests /blog.
+  # Set the DROPINBLOG_BLOG_ID and DROPINBLOG_API_KEY repository secrets to
+  # require a 200; without them (e.g. fork PRs) it checks that the server
+  # function ran.
+  fixture:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - react-start: 1.168.24 # last release with only .inputValidator()
+            method: inputValidator
+          - react-start: 1.168.61
+            method: inputValidator
+          - react-start: latest
+            method: validator
+    name: fixture (@tanstack/react-start ${{ matrix.react-start }})
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --legacy-peer-deps
+      - run: scripts/smoke-fixture.sh ${{ matrix.react-start }} ${{ matrix.method }}
+        env:
+          DROPINBLOG_BLOG_ID: ${{ secrets.DROPINBLOG_BLOG_ID }}
+          DROPINBLOG_API_KEY: ${{ secrets.DROPINBLOG_API_KEY }}
