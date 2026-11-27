@@ -22,8 +22,8 @@ import { resolveBlogData } from '@dropinblog/react-tanstack-start';
  * your installed version. If you upgrade across 1.169.0, rename it here.
  */
 export const fetchBlogData = createServerFn({ method: 'GET' })
-  .validator((splat: string) => splat)
+  .validator((input: { splat: string; preview?: string }) => input)
   .handler(({ data }) => {
     const origin = new URL(getRequestUrl()).origin;
-    return resolveBlogData(data, { blogUrl: `${origin}/blog` });
+    return resolveBlogData(data.splat, { blogUrl: `${origin}/blog` }, { preview: data.preview });
   });

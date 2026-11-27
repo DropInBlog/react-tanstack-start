@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.2.0
+
+### Added
+
+- Draft and scheduled post previews. The admin's "Preview Post" link adds
+  `?preview=<token>`; the `/blog/$` route now reads it and passes it through
+  `fetchBlogData` to `resolveBlogData(splat, config, { preview })`, which
+  fetches the post uncached. Requires `@dropinblog/react-core` 1.2.0.
+
+To get it, re-run `npx dropinblog-tanstack install` (it overwrites
+`src/routes/blog`), or update `$.tsx`, `index.tsx` and `-data.ts` there to
+match the new templates: `fetchBlogData` now takes `{ splat, preview }`.
+
 ## 1.1.1
 
 ### Fixed

@@ -6,7 +6,7 @@ import { BlogPage, BlogError, BlogNotFound } from './-blog-page';
 // Handles the bare /blog (main post list, page 1). Everything deeper than /blog
 // is handled by the splat route in $.tsx.
 export const Route = createFileRoute('/blog/')({
-  loader: () => fetchBlogData({ data: '' }),
+  loader: () => fetchBlogData({ data: { splat: '' } }),
   head: ({ loaderData }) =>
     loaderData ? getHeadOptions({ data: loaderData, blogBaseUrl: '/blog' }) : {},
   component: RouteComponent,

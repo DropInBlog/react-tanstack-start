@@ -1,5 +1,5 @@
 import { notFound } from '@tanstack/react-router';
-import type { RenderedResponse } from '@dropinblog/react-core';
+import type { FetchPostOptions, RenderedResponse } from '@dropinblog/react-core';
 import { createStartServerClient } from './server-client';
 import type { StartDropInBlogConfig, StartServerClient } from './types';
 
@@ -73,7 +73,8 @@ export function matchBlogRequest(splat: string | undefined): BlogRequest | null 
 
 function executeBlogRequest(
   client: StartServerClient,
-  request: BlogRequest
+  request: BlogRequest,
+  postOptions: FetchPostOptions
 ): Promise<RenderedResponse> {
   switch (request.kind) {
     case 'main':
@@ -83,7 +84,7 @@ function executeBlogRequest(
     case 'author':
       return client.fetchAuthor(request.slug, request.page);
     case 'post':
-      return client.fetchPost(request.slug);
+      return client.fetchPost(request.slug, postOptions);
   }
 }
 
@@ -91,10 +92,13 @@ function executeBlogRequest(
  * Resolves a splat path to its rendered blog payload. Intended to be called from
  * a server function (see the installed `-data.ts` template) so the API key
  * stays server-only. Throws TanStack `notFound()` for unrecognized paths.
+ * `postOptions.preview` is the `?preview` token from the admin's Preview Post
+ * link; it lets a single post request return a draft or scheduled post.
  */
 export async function resolveBlogData(
   splat: string | undefined,
-  config?: StartDropInBlogConfig
+  config?: StartDropInBlogConfig,
+  postOptions: FetchPostOptions = {}
 ): Promise<RenderedResponse> {
   const request = matchBlogRequest(splat);
   if (!request) {
@@ -102,7 +106,7 @@ export async function resolveBlogData(
   }
   const client = createStartServerClient(config);
   try {
-    return await executeBlogRequest(client, request);
+    return await executeBlogRequest(client, request, postOptions);
   } catch (error) {
     // The rendered API returns 404 for missing posts/categories/authors. Convert
     // that into a TanStack `notFound()` so the route shows its notFoundComponent

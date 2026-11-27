@@ -1,10 +1,10 @@
-import type { DropInBlogConfig, RenderedResponse } from '@dropinblog/react-core';
+import type { DropInBlogConfig, FetchPostOptions, RenderedResponse } from '@dropinblog/react-core';
 
 export interface StartServerClient {
   fetchMainList(page?: number): Promise<RenderedResponse>;
   fetchCategory(slug: string, page?: number): Promise<RenderedResponse>;
   fetchAuthor(slug: string, page?: number): Promise<RenderedResponse>;
-  fetchPost(slug: string): Promise<RenderedResponse>;
+  fetchPost(slug: string, options?: FetchPostOptions): Promise<RenderedResponse>;
   fetchSitemap(): Promise<RenderedResponse>;
   fetchFeed(): Promise<RenderedResponse>;
   fetchCategoryFeed(slug: string): Promise<RenderedResponse>;
